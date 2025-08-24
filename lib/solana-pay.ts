@@ -1,49 +1,27 @@
+import { PublicKey } from "@solana/web3.js";
+import { encodeURL } from '@solana/pay';
+import BigNumber from 'bignumber.js';
+
 export interface SolanaPayParams {
   recipient: string;
   amount: number;
-  token?: string;
-  reference?: string;
+  reference: PublicKey;
   label?: string;
   message?: string;
   memo?: string;
+  token: PublicKey;
 }
 
-// USDC mint address on Solana mainnet
-export const USDC_MINT = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
-
 export function generateSolanaPayURL(params: SolanaPayParams): string {
-  const baseURL = 'solana:';
-  const urlParams = new URLSearchParams();
-  
-  // Add required parameters
-  if (params.amount) {
-    urlParams.append('amount', params.amount.toString());
-  }
-  
-  // Add optional parameters
-  if (params.token || params.token === '') {
-    urlParams.append('spl-token', params.token || USDC_MINT);
-  } else {
-    urlParams.append('spl-token', USDC_MINT);
-  }
-  
-  if (params.reference) {
-    urlParams.append('reference', params.reference);
-  }
-  
-  if (params.label) {
-    urlParams.append('label', params.label);
-  }
-  
-  if (params.message) {
-    urlParams.append('message', params.message);
-  }
-  
-  if (params.memo) {
-    urlParams.append('memo', params.memo);
-  }
-
-  return `${baseURL}${params.recipient}?${urlParams.toString()}`;
+  return encodeURL({
+    recipient: new PublicKey(params.recipient),
+    amount: new BigNumber(params.amount),
+    splToken: params.token,
+    reference: params.reference,
+    label: params.label,
+    message: params.message,
+    memo: params.memo,
+  }).toString()
 }
 
 export function generateReference(): string {
