@@ -5,6 +5,7 @@ import { useTheme } from 'next-themes';
 import { Moon, Sun, User, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { SignInButton } from './app/sign-in-button';
 
 export function Navigation() {
   const { setTheme, theme } = useTheme();
@@ -34,14 +35,7 @@ export function Navigation() {
               </Button>
             </Link>
 
-            <Button 
-              variant={isSignedIn ? "default" : "outline"}
-              onClick={toggleSignIn}
-              className={isSignedIn ? "btn-primary text-sm" : "btn-secondary text-sm"}
-            >
-              <User className="h-4 w-4 mr-2" />
-              {isSignedIn ? 'Connected' : 'Sign in'}
-            </Button>
+            <SignInButton />
 
             <Button
               variant="ghost"

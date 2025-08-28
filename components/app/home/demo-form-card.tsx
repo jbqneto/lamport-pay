@@ -1,9 +1,12 @@
 'use client';
+
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CopyButton } from './copy-button';
 import { useHome } from '../context/main-context';
+
+import MainQrCode from '@/components/app/home/main-qrcode';
 
 export default function DemoFormCard() {
   const { demoForm, updateForm, solanaPayURL } = useHome();
@@ -32,22 +35,30 @@ export default function DemoFormCard() {
           </div>
 
           <div>
+            <Label htmlFor="reference" className="text-sm font-medium mb-2 block">Receiver</Label>
+            <Input id="reference"
+              value={demoForm.receiver}
+              onChange={(e) => updateForm('receiver', e.target.value)} 
+              className="input-field font-mono text-xs" />
+          </div>
+
+          <div>
             <Label htmlFor="reference" className="text-sm font-medium mb-2 block">Reference</Label>
-            <Input id="reference" value={demoForm.reference}
-              onChange={(e) => updateForm('reference', e.target.value)}
+            <Input id="reference" disabled
+              value={demoForm.reference ?? ''} 
               className="input-field font-mono text-xs" />
           </div>
         </div>
 
-        <div className="space-y-2 pt-4 border-t">
-          <Label className="text-sm font-medium mb-2 block">Solana Pay URL</Label>
-          <div className="flex items-center gap-2">
-            <Input readOnly value={solanaPayURL} className="input-field font-mono text-xs bg-muted" />
+          <aside className="flex flex-col items-center gap-2">
+            <div className="rounded-xl border bg-white p-3 shadow-sm">
+              <MainQrCode className="h-[200px] w-[200px]" />
+            </div>
+            <p className="text-xs text-muted-foreground">Scan to pay</p>
             <CopyButton text={solanaPayURL} size="sm" variant="outline" className="btn-secondary px-3">
-              Copy link
+                Copy link
             </CopyButton>
-          </div>
-        </div>
+        </aside>
       </CardContent>
     </Card>
   );

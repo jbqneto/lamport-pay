@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Navigation } from '@/components/navigation';
+import { Web3AuthProvider } from '@web3auth/modal/react';
+import { W3AProvider } from '@/components/app/context/web2auth-provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,10 +27,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navigation />
-          <main className="min-h-screen bg-background">
-            {children}
-          </main>
+          <W3AProvider>
+            <Navigation />
+            <main className="min-h-screen bg-background">
+              {children}
+            </main>
+          </W3AProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -4,11 +4,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { mockInvoices, mockWalletData, Invoice } from '@/lib/mock-data';
-import { generateSolanaPayURL, generateReference } from '@/lib/solana-pay';
+import { generateMockReference, generateSolanaPayURL } from '@/lib/solana-pay';
 import { Copy, QrCode, Eye, Plus, CheckCircle, DollarSign, Coins, User, FileText, Settings, Search } from 'lucide-react';
 import QRCode from 'react-qr-code';
 
@@ -33,7 +32,7 @@ export default function DashboardPage() {
       amount: parseFloat(newInvoice.amount),
       status: 'PENDING',
       createdAt: new Date().toISOString().split('T')[0],
-      reference: generateReference()
+      reference: generateMockReference()
     };
 
     setInvoices([invoice, ...invoices]);
@@ -56,16 +55,7 @@ export default function DashboardPage() {
   };
 
   const getSolanaPayURL = (invoice: Invoice) => {
-    return generateSolanaPayURL({
-      recipient: mockWalletData.publicKey,
-      amount: invoice.amount,
-      label: invoice.title,
-      reference: invoice.reference
-    });
-  };
-
-  const toggleQR = (invoiceId: string) => {
-    setExpandedQR(expandedQR === invoiceId ? null : invoiceId);
+    return generateMockReference();
   };
 
   return (

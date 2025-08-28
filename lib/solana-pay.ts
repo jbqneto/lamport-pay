@@ -24,7 +24,7 @@ export function generateSolanaPayURL(params: SolanaPayParams): string {
   }).toString()
 }
 
-export function generateReference(): string {
+export function generateMockReference(): string {
   // Generate a random 32-byte reference key (base58 encoded)
   const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
   let result = '';
@@ -34,7 +34,7 @@ export function generateReference(): string {
   return result;
 }
 
-export function generateMerchantKey(): string {
+export function generateMockMerchantKey(): string {
   // Generate a mock Solana public key
   const chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
   let result = '';

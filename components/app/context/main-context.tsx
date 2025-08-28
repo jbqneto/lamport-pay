@@ -7,7 +7,7 @@ type DemoForm = {
   title: string;
   amount: number;
   receiver: string;
-  reference: string;
+  reference?: string;
 };
 
 type Ctx = {
@@ -31,18 +31,17 @@ export function HomeProvider({
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  async function createLink(label: string, receiver: string, amount: number) {
+  async function createLink(label: string, receiver: string, amount: number, reference?: string) {
     setLoading(true); 
     setErr(null);
     try {
       const res = await fetch('/api/solana-pay', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ receiver, amount, label, message: 'Thanks for support. :)' }),
+        body: JSON.stringify({ receiver, amount, label, reference, message: 'Thanks for support. :)' }),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data: { url: string } = await res.json();
-      console.log("Generated Solana Pay URL:", data.url);
+      const data: { url: string, fields: any } = await res.json();
       setSolanaPayUrl(data.url);
     } catch (e: any) {
       console.error("Error generating Solana Pay URL:", e);
@@ -53,7 +52,8 @@ export function HomeProvider({
   }
 
   useEffect(() => {
-    createLink(demoForm.title, demoForm.receiver, demoForm.amount);
+    console.log("Form changed, generating new Solana Pay URL:", demoForm);
+    createLink(demoForm.title, demoForm.receiver, demoForm.amount, demoForm.reference);
   }, [demoForm.title, demoForm.receiver, demoForm.amount]);
 
   const updateForm = (field: keyof DemoForm, value: string | number) =>

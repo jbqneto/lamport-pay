@@ -40,12 +40,12 @@ export async function POST(req: NextRequest) {
   const { receiver, amount, label, message, memo } = parsed.data;
   const invoiceId = generateRandomInvoiceId();
 
-  const reference = createPublicKeyReferenceFromOrderId(invoiceId);
+  const reference = parsed.data.reference ?? await createPublicKeyReferenceFromOrderId(invoiceId);
 
   const url = generateSolanaPayURL({
     recipient: receiver,
     amount: amount,
-    reference: reference,
+    reference: typeof reference === 'string' ? new PublicKey(reference) : reference,
     label,
     message,
     memo,
