@@ -1,6 +1,8 @@
+import { CreateInvoiceDTO } from "@/app/data/dto";
 import { ConflictError, InvoiceNotFoundError } from "@/app/data/error";
 import { ListInvoicesFilter } from "@/app/data/types";
 import { Invoice, Prisma } from "@/lib/generated/prisma";
+import { PrismaClient } from "@prisma/client";
 
 export class InvoiceRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -27,8 +29,6 @@ export class InvoiceRepository {
         createdById: dto.createdById,
         merchantId: dto.merchantId,
         amount: this.toMoneyDecimal(dto.amount),
-        stablecoin: dto.stablecoin,
-        destination: dto.destination,
         status: 'CREATED',
         validUntil,
         memo: dto.memo ?? null,
