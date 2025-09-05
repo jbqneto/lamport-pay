@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { mockInvoices, mockWalletData, Invoice } from '@/lib/mock-data';
-import { generateMockReference, generateSolanaPayURL } from '@/lib/solana-pay';
+import { generateMockReference, generateSolanaPayURL } from '@/lib/solana-utils';
 import { Copy, QrCode, Eye, Plus, CheckCircle, DollarSign, Coins, User, FileText, Settings, Search } from 'lucide-react';
 import QRCode from 'react-qr-code';
 

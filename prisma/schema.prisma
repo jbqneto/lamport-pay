@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum InvoiceStatus { 
+  CREATED 
+  CONFIRMED 
+  EXPIRED 
+  CANCELLED 
+}
+
+enum Coin { 
+  USDC
+  USDT 
+}
+
+enum PaymentStatus { 
+  PENDING 
+  SEEN 
+  VALID 
+  INVALID 
+  ERROR
+}
+
+model Merchant {
+  id                String   @id @default(cuid()) @db.VarChar(64)
+  ownerId           String   @db.VarChar(64)
+  name              String   @db.VarChar(255)
+  description       String?  @db.VarChar(1024)
+  website           String?  @db.VarChar(255)
+  avatarUrl         String?  @db.VarChar(255)
+  contactEmail      String?  @db.VarChar(255)
+  status            String   @default("active") @db.VarChar(16)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  invoices         Invoice[]
+}
+
+model Invoice {
+  id            String        @id @default(cuid()) @db.VarChar(64)
+  merchantId    String        @db.VarChar(64)
+  merchant      Merchant      @relation(fields: [merchantId], references: [id], onDelete: Cascade)
+
+  amount        Decimal       @db.Decimal(30, 6)
+  coin          Coin
+  destination  String        @db.VarChar(128)
+  status       InvoiceStatus @default(CREATED)
+  validUntil   DateTime
+  memo         String?       @db.VarChar(140)
+
+  signature    String?       @unique @db.VarChar(128) // assinatura vencedora (opcional)
+  payer        String?       @db.VarChar(128)         // pagador vencedor (opcional)
+
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  payments     Payment[]
+
+  @@index([status, merchantId])
+  @@index([status, validUntil])
+}
+
+model Payment {
+  id          String        @id @default(cuid()) @db.VarChar(64)
+  invoiceId   String        @db.VarChar(64)
+  invoice     Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  // "Snapshot" para auditoria:
+  amount      Decimal       @db.Decimal(30, 6)
+  stablecoin  Coin
+  destination String        @db.VarChar(128)
+  mintAddress String        @db.VarChar(128)
+
+  // Identidade/observação on-chain por tentativa:
+  reference   String        @unique @db.VarChar(128)
+  signature   String?       @unique @db.VarChar(128)
+  slot        BigInt?       @db.BigInt
+  payer       String?       @db.VarChar(128)
+
+  status      PaymentStatus @default(PENDING)
+  error       String?       @db.VarChar(1024)
+  createdAt   DateTime      @default(now())
+  validatedAt DateTime?
+
+  @@index([invoiceId])
+  @@index([reference])
+}

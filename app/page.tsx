@@ -7,7 +7,7 @@ import { SupportedWallets } from '@/components/app/home/suppoerted-wallets';
 import { Benefits } from '@/components/app/home/benefits';
 
 export default async function HomePage() {
-  const usdcTokenAddress = process.env.USDC_MINT_ADDRESS;
+  const usdcTokenAddress = process.env.NEXT_PUBLIC_USDC_MINT_ADDRESS;
 
   if (!usdcTokenAddress) {
     throw new Error('USDC_MINT_ADDRESS is not defined in environment variables.');

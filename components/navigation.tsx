@@ -4,16 +4,48 @@ import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { Moon, Sun, User, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SignInButton } from './app/sign-in-button';
+import { useWeb3Auth } from '@web3auth/modal/react';
+import { useSolanaWallet } from '@web3auth/modal/react/solana';
+import { Connection, PublicKey } from '@solana/web3.js';
 
 export function Navigation() {
+  const SOLANA_URL = process.env.NEXT_PUBLIC_SOLANA_RPC;
   const { setTheme, theme } = useTheme();
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const { isConnected, provider } = useWeb3Auth();
+  const { accounts } = useSolanaWallet();
+  const [address, setAddress] = useState<string | null>(null);
+  const [balance, setBalance] = useState<number | null>(null);
 
-  const toggleSignIn = () => {
-    setIsSignedIn(!isSignedIn);
-  };
+  if (!SOLANA_URL) {
+    throw new Error('Missing SOLANA URL env');
+  }
+
+  const fetchWalletInfo = async () => {
+    const pubkey = accounts?.[0] ?? null;
+
+    if (!pubkey) return;
+    
+    setAddress(pubkey);
+
+    const conn = new Connection(SOLANA_URL);
+    const lamports = await conn.getBalance(new PublicKey(pubkey));
+    
+    setBalance(lamports / 1_000_000_000);
+      
+
+    console.log('Wallet address', accounts);
+  }
+  
+
+  useEffect(() => {
+    if (!isConnected) return;
+
+    fetchWalletInfo()
+    .catch((err) => console.error('Fetch wallet info error', err));
+
+  }, [isConnected, accounts]);
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

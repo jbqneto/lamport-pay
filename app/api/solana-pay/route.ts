@@ -3,10 +3,10 @@ import { PublicKey } from '@solana/web3.js';
 
 import { z } from 'zod';
 import { createPublicKeyReferenceFromOrderId } from '@/app/server/crypto.util';
-import { generateSolanaPayURL } from '@/lib/solana-pay';
+import { generateSolanaPayURL } from '@/lib/solana-utils';
 import { generateRandomInvoiceId } from '@/lib/utils';
 
-const USDC_ADDRESS = process.env.USDC_MINT_ADDRESS;
+const USDC_ADDRESS = process.env.NEXT_PUBLIC_USDC_MINT_ADDRESS;
 
 if (!USDC_ADDRESS) {
   throw new Error('USDC address not configured.');
@@ -48,8 +48,7 @@ export async function POST(req: NextRequest) {
     reference: typeof reference === 'string' ? new PublicKey(reference) : reference,
     label,
     message,
-    memo,
-    token: USDC_MINT,
+    memo
   });
 
   return NextResponse.json({

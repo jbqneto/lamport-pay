@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { generateSolanaPayURL } from '@/lib/solana-pay';
+import { generateSolanaPayURL } from '@/lib/solana-utils';
 
 type DemoForm = {
   title: string;
@@ -50,11 +50,6 @@ export function HomeProvider({
       setLoading(false);
     }
   }
-
-  useEffect(() => {
-    console.log("Form changed, generating new Solana Pay URL:", demoForm);
-    createLink(demoForm.title, demoForm.receiver, demoForm.amount, demoForm.reference);
-  }, [demoForm.title, demoForm.receiver, demoForm.amount]);
 
   const updateForm = (field: keyof DemoForm, value: string | number) =>
     setDemoForm(prev => ({ ...prev, [field]: value } as DemoForm));

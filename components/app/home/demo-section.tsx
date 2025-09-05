@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { generateSolanaPayURL } from "@/lib/solana-pay"; // sua função gera URL (Transfer Request)
+import { generateSolanaPayURL } from "@/lib/solana-utils"; // sua função gera URL (Transfer Request)
 import { QRCodeBox } from "@/components/app/qrcode-box"; // client-only
 import { QrCode, DollarSign, CheckCircle } from "lucide-react";
 import { useHome } from "../context/main-context";

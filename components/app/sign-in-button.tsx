@@ -10,18 +10,22 @@ import {
 
 export function SignInButton() {
   const { connect, loading } = useWeb3AuthConnect();   // abre o modal
-  const { isConnected } = useWeb3Auth();
+  const { isConnected, provider } = useWeb3Auth();
   const { disconnect } = useWeb3AuthDisconnect();
   const { userInfo } = useWeb3AuthUser();
 
   const signIn = (evt: any) => {
-    console.log('Sign in clicked');
-    connect();
+    evt.preventDefault();
+
+    connect().then((provider) => {
+      console.log('Connected', provider);
+    }).catch((err) => {
+      console.error('Connection error', err);
+    });
   }
 
-  console.log('is connected?', isConnected, userInfo);
-
   if (isConnected) {
+
     return (
       <div className="flex items-center gap-2">
         <span className="text-sm text-muted-foreground">
